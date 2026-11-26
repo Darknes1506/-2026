@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, interactive-widget=resizes-content">
+  <meta name="theme-color" content="#18181F">
+  <title>Нейро-мед</title>
+  <link rel="icon" href="./mark.png" type="image/png">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./chat.js"></script>
+</head>
+<body>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></symbol>
+    <symbol id="book" viewBox="0 0 24 24"><path d="M12 6C9 4 6 4 3 5v13c3-1 6-1 9 1 3-2 6-2 9-1V5c-3-1-6-1-9 1zm0 0v13"/></symbol>
+    <symbol id="send" viewBox="0 0 24 24"><path d="M12 19V5m-6 6 6-6 6 6"/></symbol>
+    <symbol id="spark" viewBox="0 0 24 24"><path d="M12 2.5 14.5 9.5 21.5 12l-7 2.5-2.5 7-2.5-7L2.5 12l7-2.5z"/></symbol>
+    <symbol id="layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5zm-9 9 9 5 9-5M3 16l9 5 9-5"/></symbol>
+    <symbol id="list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+    <symbol id="file" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zm8 0v5h4M9 12h6m-6 4h6"/></symbol>
+    <symbol id="menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+    <symbol id="close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="chevron" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></symbol>
+    <symbol id="trash" viewBox="0 0 24 24"><path d="M4 6h16M9 6V3h6v3M6 6l1 14h10l1-14M10 10v6m4-6v6"/></symbol>
+    <symbol id="edit" viewBox="0 0 24 24"><path d="m15 5 4 4M4 20l4-1 12-12-4-4L4 15z"/></symbol>
+  </svg>
+  <div class="app">
+    <div class="sidebar-slot">
+      <aside class="sidebar" aria-label="История чатов">
+        <div class="sidebar-top">
+          <div class="brand"><img src="./mark.png" width="40" height="40" alt="">Нейро-мед</div>
+          <button class="icon-button mobile-only" type="button" id="close-history" aria-label="Закрыть историю"><svg class="icon" aria-hidden="true"><use href="#close"/></svg></button>
+        </div>
+        <button class="new-chat" type="button" id="new-chat"><svg class="icon" aria-hidden="true"><use href="#plus"/></svg>Новый чат</button>
+        <nav class="history" aria-labelledby="history-title">
+          <h2 id="history-title"><svg class="icon" aria-hidden="true"><use href="#clock"/></svg>Недавние чаты</h2>
+          <ul id="history-list"></ul>
+          <p class="history-empty" id="history-empty" hidden>Диалогов пока нет.</p>
+        </nav>
+        <div class="sidebar-footer"><svg class="icon" aria-hidden="true"><use href="#book"/></svg>Кафедра гигиены</div>
+      </aside>
+    </div>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-button mobile-only" type="button" id="open-history" aria-label="Открыть историю чатов" aria-haspopup="dialog" aria-controls="history-drawer"><svg class="icon" aria-hidden="true"><use href="#menu"/></svg></button>
+        <span class="topbar-brand" id="topbar-brand"><img src="./mark.png" width="25" height="25" alt="">Нейро-мед</span>
+        <span class="topbar-title" id="chat-title">Учебный ассистент</span>
+        <span class="demo-label"><span class="demo-desktop">Демо-режим</span><span class="demo-mobile">Демо</span></span>
+        <button class="icon-button mobile-only" type="button" id="mobile-new-chat" aria-label="Новый чат"><svg class="icon" aria-hidden="true"><use href="#plus"/></svg></button>
+      </header>
+
+      <section class="welcome" id="welcome" aria-labelledby="welcome-title">
+        <div class="welcome-inner">
+          <div class="welcome-heading">
+            <img class="welcome-mark" src="./mark.png" width="62" height="62" alt="">
+            <h1 id="welcome-title">Что разберём <span>сегодня?</span></h1>
+            <p>Объясним тему, сравним понятия, проверим знания.</p>
+          </div>
+          <div id="welcome-composer">
+            <form class="composer" id="composer">
+              <label class="visually-hidden" for="question" id="question-label">Вопрос по гигиене</label>
+              <textarea id="question" rows="2" maxlength="4000" placeholder="Спросите о теме занятия…" required></textarea>
+              <div class="composer-footer">
+                <div class="composer-tools">
+                  <button class="help-button" id="help-trigger" type="button" popovertarget="help-popup" aria-controls="help-popup" aria-expanded="false"><svg class="icon" aria-hidden="true"><use href="#spark"/></svg>Помощь с вопросом<svg class="icon help-chevron" aria-hidden="true"><use href="#chevron"/></svg></button>
+                  <span class="material-tag" title="В демо используются примеры материалов"><svg class="icon" aria-hidden="true"><use href="#book"/></svg>Материалы кафедры</span>
+                </div>
+                <button class="send" type="submit" aria-label="Отправить сообщение" disabled><svg class="icon" aria-hidden="true"><use href="#send"/></svg></button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="conversation" id="conversation" aria-label="Диалог" hidden>
+        <div class="chat-column">
+          <div class="message-scroll" id="message-scroll">
+            <div class="message-list" id="message-list" role="log" aria-label="Сообщения"></div>
+          </div>
+          <div class="conversation-composer" id="conversation-composer"></div>
+        </div>
+        <dialog class="source" id="source" aria-labelledby="source-heading">
+          <div class="source-heading-row">
+            <div>
+              <h2 id="source-heading">Источник</h2>
+              <p class="source-demo">Демонстрационный материал</p>
+            </div>
+            <button class="icon-button" id="close-source" type="button" aria-label="Закрыть источник" autofocus><svg class="icon" aria-hidden="true"><use href="#close"/></svg></button>
+          </div>
+          <div class="source-meta">
+            <p class="source-title"><svg class="icon" aria-hidden="true"><use href="#file"/></svg><span id="source-title"></span></p>
+            <p class="source-page" id="source-page"></p>
+          </div>
+          <blockquote class="source-excerpt" id="source-excerpt"></blockquote>
+          <a class="open-page" id="open-page" target="_blank" rel="noopener">Открыть страницу<span class="visually-hidden"> (в новой вкладке)</span></a>
+        </dialog>
+      </section>
+    </main>
+  </div>
+
+  <dialog class="history-drawer" id="history-drawer" aria-labelledby="history-title"></dialog>
+
+  <div class="popup help-popup" id="help-popup" popover="auto" role="group" aria-labelledby="help-heading">
+    <p class="popup-heading" id="help-heading">Как помочь с вопросом</p>
+    <div class="help-options" id="help-options"></div>
+    <p class="popup-empty" id="help-empty" hidden>Шаблонов пока нет.</p>
+    <button class="popup-action" id="quick-create-template" type="button" hidden><svg class="icon" aria-hidden="true"><use href="#plus"/></svg>Создать шаблон</button>
+    <button class="popup-action manage-action" id="manage-templates" type="button" aria-haspopup="dialog">Управление шаблонами</button>
+  </div>
+
+  <dialog class="panel-dialog" id="templates-dialog" aria-labelledby="templates-heading">
+    <div class="panel-heading">
+      <h2 id="templates-heading">Управление шаблонами</h2>
+      <button class="icon-button" id="close-templates" type="button" aria-label="Закрыть управление шаблонами"><svg class="icon" aria-hidden="true"><use href="#close"/></svg></button>
+    </div>
+    <div id="template-list-view">
+      <ul class="template-list" id="template-list"></ul>
+      <p class="panel-empty" id="template-empty" hidden>Шаблонов пока нет.</p>
+      <button class="action-button primary-button add-template" id="add-template" type="button"><svg class="icon" aria-hidden="true"><use href="#plus"/></svg>Создать шаблон</button>
+    </div>
+    <form class="template-editor" id="template-editor" hidden>
+      <label for="template-title">Название</label>
+      <input id="template-title" maxlength="80" required>
+      <label for="template-prompt">Текст запроса</label>
+      <textarea id="template-prompt" rows="5" maxlength="4000" required></textarea>
+      <div class="panel-actions">
+        <button class="action-button" id="cancel-template" type="button">Отмена</button>
+        <button class="action-button primary-button" type="submit">Сохранить</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="panel-dialog confirmation" id="confirm-dialog" aria-labelledby="confirm-heading" aria-describedby="confirm-copy">
+    <form method="dialog">
+      <h2 id="confirm-heading"></h2>
+      <p id="confirm-copy"></p>
+      <div class="panel-actions">
+        <button class="action-button" value="cancel" autofocus>Отмена</button>
+        <button class="action-button primary-button" id="confirm-accept" value="confirm"></button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="popup chat-popup" id="chat-popup" popover="auto">
+    <button class="popup-action danger-text" id="delete-chat" type="button" aria-haspopup="dialog"><svg class="icon" aria-hidden="true"><use href="#trash"/></svg>Удалить чат</button>
+  </div>
+
+  <template id="help-option-template">
+    <button class="help-option" type="button">
+      <svg class="icon" aria-hidden="true"><use/></svg><span><strong></strong><small></small></span>
+    </button>
+  </template>
+  <template id="template-row-template">
+    <li class="template-row">
+      <div class="template-summary"><strong></strong><span></span></div>
+      <button class="icon-button edit-template" type="button"><svg class="icon" aria-hidden="true"><use href="#edit"/></svg></button>
+      <button class="icon-button delete-template" type="button"><svg class="icon" aria-hidden="true"><use href="#trash"/></svg></button>
+    </li>
+  </template>
+  <template id="history-template">
+    <li class="history-row">
+      <button class="history-item" type="button"><svg class="icon" aria-hidden="true"><use href="#chat"/></svg><span></span></button>
+      <button class="icon-button history-more" type="button" popovertarget="chat-popup" aria-controls="chat-popup" aria-expanded="false"><svg class="icon" aria-hidden="true"><use href="#more"/></svg></button>
+    </li>
+  </template>
+  <template id="user-message-template">
+    <div class="user-message-wrap">
+      <p class="user-message"><span class="visually-hidden">Вы: </span></p>
+      <button class="edit-message" type="button"><svg class="icon" aria-hidden="true"><use href="#edit"/></svg>Редактировать сообщение</button>
+    </div>
+  </template>
+  <template id="message-editor-template">
+    <form class="message-editor">
+      <textarea rows="3" maxlength="4000" aria-label="Текст сообщения"></textarea>
+      <p class="edit-error" role="alert"></p>
+      <div class="panel-actions">
+        <button class="action-button cancel-edit" type="button">Отмена</button>
+        <button class="action-button primary-button" type="submit" disabled>Отправить</button>
+      </div>
+    </form>
+  </template>
+  <template id="assistant-template">
+    <article class="assistant-message">
+      <header class="assistant-name"><img src="./mark.png" width="32" height="32" alt="">Нейро-мед <span>Демо-ответ</span></header>
+      <div class="assistant-content"></div>
+    </article>
+  </template>
+  <template id="citation-template">
+    <a class="citation" aria-controls="source" aria-haspopup="dialog"><svg class="icon" aria-hidden="true"><use href="#file"/></svg><span></span></a>
+  </template>
+</body>
+</html>
